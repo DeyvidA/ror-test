@@ -1,5 +1,7 @@
 class ProductsController < ApplicationController
   before_action :set_product, only: %i[ show update destroy ]
+  before_action :authorized_user
+
 
   # GET /products
   def index
@@ -16,7 +18,6 @@ class ProductsController < ApplicationController
   # POST /products
   def create
     @product = Product.new(product_params)
-
     if @product.save
       render json: @product, status: :created, location: @product
     else
@@ -47,5 +48,17 @@ class ProductsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def product_params
       params.require(:product).permit(:name, :description, :sku, :stock, :status)
+    end
+
+    def authorized_user
+      # read the token from the request headers
+      token = request.headers["Authorization"]
+
+      if token && token == "Bearer DUMMY_TOKEN"
+        return true
+         `  `
+      else
+        render json: { error: "Not authorized" }, status: :unauthorized
+      end
     end
 end

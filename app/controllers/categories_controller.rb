@@ -1,5 +1,6 @@
 class CategoriesController < ApplicationController
   before_action :set_category, only: %i[ show update destroy ]
+  before_action :authorized_user
 
   # GET /categories
   def index
@@ -48,4 +49,16 @@ class CategoriesController < ApplicationController
     def category_params
       params.require(:category).permit(:name)
     end
+    
+    def authorized_user
+      # read the token from the request headers
+      token = request.headers["Authorization"]
+
+      if token && token == "Bearer DUMMY_TOKEN"
+        return 
+      else
+        render json: { error: "Not authorized" }, status: :unauthorized
+      end
+    end
+
 end

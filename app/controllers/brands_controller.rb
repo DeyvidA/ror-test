@@ -1,5 +1,6 @@
 class BrandsController < ApplicationController
   before_action :set_brand, only: %i[ show update destroy ]
+  before_action :authorized_user
 
   # GET /brands
   def index
@@ -36,6 +37,8 @@ class BrandsController < ApplicationController
   # DELETE /brands/1
   def destroy
     @brand.destroy
+
+    render json: { message: "Brand deleted" }
   end
 
   private
@@ -47,5 +50,16 @@ class BrandsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def brand_params
       params.require(:brand).permit(:name)
+    end
+
+    def authorized_user
+      # read the token from the request headers
+      token = request.headers["Authorization"]
+
+      if token && token == "Bearer DUMMY_TOKEN"
+        return 
+      else
+        render json: { error: "Not authorized" }, status: :unauthorized
+      end
     end
 end
