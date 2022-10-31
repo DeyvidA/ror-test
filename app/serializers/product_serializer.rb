@@ -1,7 +1,7 @@
 class ProductSerializer < ActiveModel::Serializer
-  attributes :id, :name, :description, :sku, :stock, :status
+  attributes :id, :name, :description, :sku, :stock, :status, :brand_id, :category_id
 
-  def brand
+  def brand_id
     brand = self.object.brand
     {
       id: brand.id,
@@ -9,7 +9,7 @@ class ProductSerializer < ActiveModel::Serializer
     }
   end
 
-  def category
+  def category_id
     category = self.object.category
     {
       id: category.id,

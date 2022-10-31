@@ -27,7 +27,8 @@ class ProductsController < ApplicationController
 
   # PATCH/PUT /products/1
   def update
-    if @product.update(product_params)
+
+    if @product.update(update_params)
       render json: @product
     else
       render json: @product.errors, status: :unprocessable_entity
@@ -47,7 +48,11 @@ class ProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def product_params
-      params.require(:product).permit(:name, :description, :sku, :stock, :status)
+      params.require(:product).permit(:name, :description, :sku, :stock, :status, :brand_id, :category_id)
+    end
+
+    def update_params
+      params.require(:product).permit(:name, :description, :status)
     end
 
     def authorized_user
@@ -56,7 +61,6 @@ class ProductsController < ApplicationController
 
       if token && token == "Bearer DUMMY_TOKEN"
         return true
-         `  `
       else
         render json: { error: "Not authorized" }, status: :unauthorized
       end
